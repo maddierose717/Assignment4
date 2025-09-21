@@ -1,13 +1,30 @@
 import pytest
-from app.operations import addition, subtraction, multiplication, division
+from typing import Union
+from app.operations import Operations 
+
+number = Union[int, float]
 
 
-def test_addition():
-    assert addition(1, 1) == 2
-    assert addition(-2, 5) == 3
-    assert addition(0, 0) == 0
-    assert addition(1.5, 2.5) == 4.0
+@pytest.mark.parametrize("a, b, expected",
 
+ [
+        (2, 3, 5),           # Test adding two positive integers
+        (0, 0, 0),           # Test adding two zeros
+        (-1, 1, 0),          # Test adding a negative and a positive integer
+        (2.5, 3.5, 6.0),     # Test adding two positive floats
+        (-2.5, 3.5, 1.0),    # Test adding a negative float and a positive float
+    ],
+    ids=[
+        "add_two_positive_integers",
+        "add_two_zeros",
+        "add_negative_and_positive_integer",
+        "add_two_positive_floats",
+        "add_negative_float_and_positive_float",
+    ]
+)
+def test_addition(a: Number, b: Number, expected: Number) -> None:
+     result = Operations.addition(a, b)
+     assert result == expected, f"Expected addition({a}, {b}) to be {expected}, but got {result}"
 
 def test_subtraction():
     assert subtraction(5, 3) == 2
@@ -32,4 +49,8 @@ def test_division():
 def test_division_by_zero():
     with pytest.raises(ZeroDivisionError):
         division(10, 0)
-
+        
+def test_division_by_zero():
+    """Test division by zero."""
+    with pytest.raises(ValueError, match="Division by zero is not allowed."):
+        division(1, 0)
