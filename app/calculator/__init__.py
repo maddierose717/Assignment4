@@ -1,7 +1,8 @@
 import sys
 import readline
 from typing import List
-from app.calculator import Calculation, CalculationFactory
+
+from calculation import Calculation
 
 def display_help() -> None:
     """
@@ -31,3 +32,16 @@ Examples:
     divide 20 4
     """
     print(help_message)
+def display_history(history: List[Calculation]) -> None:
+    """
+    Displays the history of calculations performed during the session.
+
+    Parameters:
+        history (List[Calculation]): A list of Calculation objects representing past calculations.
+    """
+    if not history:
+        print("No calculations performed yet.")
+    else:
+        print("Calculation History:")
+        for idx, calculation in enumerate(history, start=1):
+            print(f"{idx}. {calculation}")
