@@ -45,3 +45,68 @@ def display_history(history: List[Calculation]) -> None:
         print("Calculation History:")
         for idx, calculation in enumerate(history, start=1):
             print(f"{idx}. {calculation}")
+
+def calculator() -> None:
+    history: List[Calculation] = []
+
+    print("Welcome to the Professional Calculator REPL!")
+    print("Type 'help' for instructions or 'exit' to quit.\n")
+
+    while True:
+        try:
+            user_input: str = input(">> ").strip()
+
+            if not user_input:
+                continue # pragma: no cover
+
+            command = user_input.lower()
+
+            if command == "help":
+                display_help()
+                continue
+            elif command == "history":
+                display_history(history)
+                continue
+            elif command == "exit":
+                print("Exiting calculator. Goodbye!\n")
+                sys.exit(0)
+
+            try:
+                operation, num1_str, num2_str = user_input.split()
+                num1: float = float(num1_str)
+                num2: float = float(num2_str)
+            except ValueError:
+                print("Invalid input. Please follow the format: <operation> <num1> <num2>")
+                print("Type 'help' for more information.\n")
+                continue
+
+            try:
+                calculation = CalculationFactory.create_calculation(operation, num1, num2)
+            except ValueError as ve:
+                print(ve)
+                print("Type 'help' to see the list of supported operations.\n")
+                continue
+
+            try:
+                result = calculation.execute()
+            except ZeroDivisionError:
+                print("Cannot divide by zero.")
+                print("Please enter a non-zero divisor.\n")
+                continue
+            except Exception as e:
+                print(f"An error occurred during calculation: {e}")
+                print("Please try again.\n")
+                continue
+
+            result_str: str = f"{calculation}"
+            print(f"Result: {result_str}\n")
+
+            history.append(calculation)
+
+        except KeyboardInterrupt:
+            print("\nKeyboard interrupt detected. Exiting calculator. Goodbye!")
+            sys.exit(0)
+        except EOFError:
+            print("\nEOF detected. Exiting calculator. Goodbye!")
+            sys.exit(0)
+
