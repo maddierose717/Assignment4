@@ -110,3 +110,4 @@ def calculator() -> None:
             print("\nEOF detected. Exiting calculator. Goodbye!")
             sys.exit(0)
 
+__all__ = ["display_help", "display_history", "calculator"]
