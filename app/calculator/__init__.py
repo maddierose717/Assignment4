@@ -2,7 +2,7 @@ import sys
 import readline
 from typing import List
 
-from calculation import Calculation
+from app.calculation import Calculation, CalculationFactory
 
 def display_help() -> None:
     """
