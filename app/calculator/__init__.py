@@ -1,13 +1,7 @@
-import sys
-import readline
 from typing import List
-
 from app.calculation import Calculation, CalculationFactory
 
 def display_help() -> None:
-    """
-    Displays the help message with usage instructions and supported operations.
-    """
     help_message = """
 Calculator REPL Help
 --------------------
@@ -30,15 +24,10 @@ Examples:
     subtract 15.5 3.2
     multiply 7 8
     divide 20 4
-    """
+"""
     print(help_message)
-def display_history(history: List[Calculation]) -> None:
-    """
-    Displays the history of calculations performed during the session.
 
-    Parameters:
-        history (List[Calculation]): A list of Calculation objects representing past calculations.
-    """
+def display_history(history: List[Calculation]) -> None:
     if not history:
         print("No calculations performed yet.")
     else:
@@ -55,12 +44,10 @@ def calculator() -> None:
     while True:
         try:
             user_input: str = input(">> ").strip()
-
             if not user_input:
-                continue # pragma: no cover
+                continue
 
             command = user_input.lower()
-
             if command == "help":
                 display_help()
                 continue
@@ -69,7 +56,7 @@ def calculator() -> None:
                 continue
             elif command == "exit":
                 print("Exiting calculator. Goodbye!\n")
-                sys.exit(0)
+                return
 
             try:
                 operation, num1_str, num2_str = user_input.split()
@@ -82,15 +69,15 @@ def calculator() -> None:
 
             try:
                 calculation = CalculationFactory.create_calculation(operation, num1, num2)
-            except ValueError as ve:
-                print(ve)
+            except ValueError:
+                print("Unknown operation")
                 print("Type 'help' to see the list of supported operations.\n")
                 continue
 
             try:
                 result = calculation.execute()
             except ZeroDivisionError:
-                print("Cannot divide by zero.")
+                print("Division by zero is not allowed")
                 print("Please enter a non-zero divisor.\n")
                 continue
             except Exception as e:
@@ -98,16 +85,14 @@ def calculator() -> None:
                 print("Please try again.\n")
                 continue
 
-            result_str: str = f"{calculation}"
-            print(f"Result: {result_str}\n")
-
+            print(f"Result: {result}\n")
             history.append(calculation)
 
         except KeyboardInterrupt:
             print("\nKeyboard interrupt detected. Exiting calculator. Goodbye!")
-            sys.exit(0)
+            return
         except EOFError:
             print("\nEOF detected. Exiting calculator. Goodbye!")
-            sys.exit(0)
+            return
 
 __all__ = ["display_help", "display_history", "calculator"]
